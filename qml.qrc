@@ -1,5 +1,12 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
+        <file>dots.png</file>
+        <file>map_ico.png</file>
+        <file>route_ico.png</file>
+        <file>settings_ico.png</file>
+        <file>Settings.ui.qml</file>
+        <file>Map.ui.qml</file>
+        <file>Route.ui.qml</file>
     </qresource>
 </RCC>

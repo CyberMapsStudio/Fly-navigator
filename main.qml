@@ -2,7 +2,9 @@ import QtQuick 2.15
 
 import QtQuick.Window 2.15
 import QtQuick.Controls 2.15
+
 Window {
+    id: window
     width: Screen.width
     height: Screen.height
     visible: true
@@ -59,11 +61,10 @@ Window {
 
 
             RoundButton {
-                id: roundButton1
+                id: routeButton
                 width: 80
                 height: 72
                 visible: true
-                text: "+"
                 anchors.left: parent.left
                 font.pixelSize: 12
                 anchors.leftMargin: 20
@@ -73,9 +74,9 @@ Window {
                 flat: true
                 display: AbstractButton.IconOnly
                 icon.source: "route_ico.png"
-
+                onClicked: {stack.push("Route.ui.qml")}
                 Label {
-                    id: label1
+                    id: routeLabel
                     color: "#ddffffff"
                     text: qsTr("Route")
                     anchors.left: parent.left
@@ -91,17 +92,17 @@ Window {
             }
 
             RoundButton {
-                id: roundButton2
+                id: mapButton
                 width: 80
                 height: 72
                 visible: true
-                text: "+"
                 font.pixelSize: 12
                 anchors.horizontalCenter: parent.horizontalCenter
                 flat: true
                 icon.height: 30
+                onClicked: {stack.push("Map.ui.qml")}
                 Label {
-                    id: label2
+                    id: mapLabel
                     color: "#ddffffff"
                     text: qsTr("Map")
                     anchors.left: parent.left
@@ -121,18 +122,18 @@ Window {
             }
 
             RoundButton {
-                id: roundButton3
+                id: settingButton
                 width: 80
                 height: 72
                 visible: true
-                text: "+"
                 anchors.right: parent.right
                 font.pixelSize: 12
                 anchors.rightMargin: 20
                 flat: true
                 icon.height: 30
+                onClicked: {stack.push("Settings.ui.qml")}
                 Label {
-                    id: label3
+                    id: settingsLabel
                     color: "#ddffffff"
                     text: qsTr("Setting")
                     anchors.left: parent.left
@@ -154,37 +155,33 @@ Window {
 
         }
 
+        StackView {
+            id: stack
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.top: rectangle.bottom
+            anchors.bottom: row.top
+            anchors.bottomMargin: 0
+            anchors.topMargin: 0
+            initialItem: Map {}
+        }
+
     }
 
 
-        Text {
-            id: text1
-            color: "#ffffff"
-            text: qsTr("Maps doesn't download")
-            anchors.fill: parent
-            font.pixelSize: 20
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-            layer.enabled: false
-            fontSizeMode: Text.FixedSize
-            textFormat: Text.PlainText
-            font.family: "Arial"
-        }
-
-        RoundButton {
-            id: roundButton
-            x: 267
-            width: 40
-            height: 40
-            text: "+"
-            anchors.right: parent.right
-            anchors.top: parent.top
-            icon.color: "#ddffffff"
-            icon.source: "dots.png"
-            display: AbstractButton.IconOnly
-            flat: true
-            anchors.topMargin: 56
-            anchors.rightMargin: 15
-        }
+    RoundButton {
+        id: roundButton
+        x: 267
+        width: 40
+        height: 40
+        anchors.right: parent.right
+        anchors.top: parent.top
+        icon.color: "#ddffffff"
+        icon.source: "dots.png"
+        display: AbstractButton.IconOnly
+        flat: true
+        anchors.topMargin: 56
+        anchors.rightMargin: 15
+    }
 
 }
