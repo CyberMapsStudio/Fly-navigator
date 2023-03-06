@@ -198,5 +198,21 @@ Rectangle {
 
         }
 }
+    RoundButton {
+        x: 300
+                    id: northButton
+                    //icon.source: "qrc:/arrow.png"
+                    icon.width: 30
+                    icon.height: 30
+
+                    anchors {
+                        horizontalCenter: parent.horizontalCenter
+                        top: parent.top
+                        topMargin: 16
+                    }
+                    onClicked: {
+                        map.setBearing(0,map.center);
+                    }
+                }
 
     }
