@@ -16,13 +16,14 @@ Rectangle {
         id: map
         anchors.fill: parent
         plugin: mapPlugin
-        center: QtPositioning.coordinate(37.7749, -122.4194)
+        center: QtPositioning.coordinate(47.21276881282476, 38.915922528876514)
         zoomLevel: 12
+
+
         MapPolyline {
             id: poli
                  path: [
-                     QtPositioning.coordinate(51.5074, -0.1278), // Лондон
-                     QtPositioning.coordinate(48.8566, 2.3522) // Париж
+                    QtPositioning.coordinate(positionSource.position.coordinate.latitude, positionSource.position.coordinate.longitude),
                  ]
                  line.width: 3
                  line.color: "red"
@@ -55,6 +56,45 @@ Rectangle {
                 height: 40
                 source: "GPS-PNG.png"
 
+            }
+        }
+        MapQuickItem {
+
+            id: marker_gps
+            autoFadeIn: true
+            anchorPoint.x: imageGPS.width/2
+                anchorPoint.y: imageGPS.height
+
+            sourceItem: Image {
+
+                id: imageGPS
+                width: 40
+                height: 40
+                source: "placeholder.png"
+
+            }
+        }
+        PositionSource {
+            id: positionSource
+
+            // Установка типа источника данных
+
+            // Свойства для хранения текущих координат
+            property real latitude: 0
+            property real longitude: 0
+
+            // Подключение к сигналу для получения обновлений координат
+            onPositionChanged: {
+                latitude = position.coordinate.latitude
+                longitude = position.coordinate.longitude
+                marker_gps.coordinate = QtPositioning.coordinate(latitude, longitude)
+                map.addMapItem(marker_gps)
+            }
+
+            // Инициализация QGeoPositionInfoSource
+            Component.onCompleted: {
+                positionSource.source = QtPositioning.QGeoPositionInfoSource.createDefaultSource()
+                positionSource.start()
             }
         }
         MouseArea {
@@ -143,6 +183,17 @@ Rectangle {
         text: "dell all"
         onClicked: {
             poli.path = []
+            map.addMapItem(poli)
+
+        }
+}
+
+    Button {
+        x:100
+        id: gps_first_dot
+        text: "first= GPS"
+        onClicked: {
+            poli.path[0]= QtPositioning.coordinate(positionSource.position.coordinate.latitude, positionSource.position.coordinate.longitude)
             map.addMapItem(poli)
 
         }
