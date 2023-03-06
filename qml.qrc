@@ -8,5 +8,8 @@
         <file>Settings.ui.qml</file>
         <file>Map.ui.qml</file>
         <file>Route.ui.qml</file>
+        <file>plus.png</file>
+        <file>minus.png</file>
+		<file>GPS-PNG.png</file>
     </qresource>
 </RCC>

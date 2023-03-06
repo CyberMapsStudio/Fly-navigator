@@ -30,7 +30,7 @@ Window {
             anchors.rightMargin: 0
 
             Label {
-                id: label
+                id: label_te
                 color: "#ddffffff"
                 text: qsTr("Fly navigator")
                 anchors.verticalCenter: parent.verticalCenter
@@ -167,19 +167,5 @@ Window {
     }
 
 
-    RoundButton {
-        id: roundButton
-        x: 267
-        width: 40
-        height: 40
-        anchors.right: parent.right
-        anchors.top: parent.top
-        icon.color: "#ddffffff"
-        icon.source: "dots.png"
-        display: AbstractButton.IconOnly
-        flat: true
-        anchors.topMargin: 56
-        anchors.rightMargin: 15
-    }
 
 }

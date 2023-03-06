@@ -21,6 +21,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
+    C:/Users/Home/Downloads/minus.png \
     android/AndroidManifest.xml \
     android/build.gradle \
     android/gradle.properties \
