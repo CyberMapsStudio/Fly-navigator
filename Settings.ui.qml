@@ -125,7 +125,13 @@ Rectangle {
             anchors.bottomMargin: 0
         }
     }
+    Button{
+        onClicked: {
 
-
+        }
+    }
+    Component.onCompleted: {
+            label_te.text = "Settings"
+        }
 
 }

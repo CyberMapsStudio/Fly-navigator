@@ -1,6 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
-
+import Qt.labs.folderlistmodel 2.1
 Rectangle {
     color: "#263238"
     border.color: "#263238"
@@ -16,4 +16,7 @@ Rectangle {
         textFormat: Text.PlainText
 
     }
+    Component.onCompleted: {
+            label_te.text = "Route"
+        }
 }

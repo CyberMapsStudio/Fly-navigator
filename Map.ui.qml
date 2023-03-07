@@ -32,9 +32,6 @@ Rectangle {
                id: mapItem
                anchorPoint.x: markerImage.width/2
                    anchorPoint.y: markerImage.height
-               // указать иконку для отображения объекта на карте
-               // иконка должна находиться в папке assets
-               // здесь используется иконка "map-marker.png"
                sourceItem: Image {
                    id: markerImage
                    source: "/GPS-PNG.png"
@@ -76,19 +73,12 @@ Rectangle {
         }
         PositionSource {
             id: positionSource
-
-            // Установка типа источника данных
-
-            // Свойства для хранения текущих координат
-            property real latitude: 0
-            property real longitude: 0
-
-            // Подключение к сигналу для получения обновлений координат
+            active: true
             onPositionChanged: {
-                latitude = position.coordinate.latitude
-                longitude = position.coordinate.longitude
-                marker_gps.coordinate = QtPositioning.coordinate(latitude, longitude)
+                console.log("Coordinate:", position.coordinate);
+                marker_gps.coordinate = position.coordinate
                 map.addMapItem(marker_gps)
+                map.addMapItem(poli)
             }
 
             // Инициализация QGeoPositionInfoSource
@@ -110,7 +100,22 @@ Rectangle {
                    poli.addCoordinate(pos)
                    // отобразить объект на карте
                    map.addMapItem(mapItem)
+
                    //map.addMapItem(poli)
+                   var totalDistance = 0
+                   var previousPoint = poli.path[0]
+                           for (var i = 0; i < poli.pathLength(); i++) {
+                               var currentPoint = poli.path[i]
+                               var distance = QtPositioning.coordinate(previousPoint.latitude, previousPoint.longitude)
+                                   .distanceTo(QtPositioning.coordinate(currentPoint.latitude, currentPoint.longitude))
+                               totalDistance += distance
+                               previousPoint = currentPoint
+                           }
+                           var finalDistance = totalDistance + QtPositioning.coordinate(previousPoint.latitude, previousPoint.longitude)
+                               .distanceTo(QtPositioning.coordinate(poli.path[poli.pathLength()-1].latitude,poli.path[poli.pathLength()-1].longitude))
+                           console.log("Distance: " + finalDistance + " meters")
+
+                            leng_text.text="Distance: " + Math.round(finalDistance) + " meters"
                }
 
     }
@@ -169,8 +174,7 @@ Rectangle {
         }
     }
     Button {
-        id: addPiter
-        text: "Add point"
+        text: "remove one"
         onClicked: {
             poli.removeCoordinate(poli.path[poli.path.length-1])
             mapItem.coordinate =poli.path[poli.path.length-1]
@@ -193,15 +197,21 @@ Rectangle {
         id: gps_first_dot
         text: "first= GPS"
         onClicked: {
-            poli.path[0]= QtPositioning.coordinate(positionSource.position.coordinate.latitude, positionSource.position.coordinate.longitude)
-            map.addMapItem(poli)
+            if (poli.path == []){
+                poli.addCoordinate( positionSource.position.coordinate)
 
+            }
+            else{
+                poli.replaceCoordinate(0,positionSource.position.coordinate)
+
+}
+            map.addMapItem(poli)
         }
 }
     RoundButton {
         x: 300
                     id: northButton
-                    //icon.source: "qrc:/arrow.png"
+                    icon.source: "qrc:/arrow.png"
                     icon.width: 30
                     icon.height: 30
 
@@ -214,5 +224,36 @@ Rectangle {
                         map.setBearing(0,map.center);
                     }
                 }
+    Button{
+    id:print_b
+    y: 200
+    text: "Print_route"
+    onClicked: {
+        console.log(poli.path)
+
+    }
+    }
+    RoundButton {
+            x: 450
+            id: centerButton
+            //icon.source: "qrc:/me.png"
+            icon.width: 30
+            icon.height: 30
+            anchors.right: parent.right
+            anchors.top: parent.TopRight
+            anchors.topMargin: 16
+            anchors.rightMargin: 0
+            onClicked: {
+                map.center = positionSource.position.coordinate;
+                map.zoomLevel = 12;
+            }
+        }
+    Label{
+        y:300
+        id: leng_text
+    }
+    Component.onCompleted: {
+            label_te.text = "Map"
+        }
 
     }

@@ -11,6 +11,7 @@
         <file>plus.png</file>
         <file>minus.png</file>
 		<file>GPS-PNG.png</file>
+<file>arrow.png</file>
 <file>placeholder.png</file>
     </qresource>
 </RCC>
