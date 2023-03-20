@@ -115,142 +115,191 @@ Rectangle {
                                .distanceTo(QtPositioning.coordinate(poli.path[poli.pathLength()-1].latitude,poli.path[poli.pathLength()-1].longitude))
                            console.log("Distance: " + finalDistance + " meters")
 
-                            leng_text.text="Distance: " + Math.round(finalDistance) + " meters"
+                            leng_text.text="Distance: " + Math.round(finalDistance) + " meters" + Math.round(finalDistance)+ " Km"
                }
 
     }
 
-    RoundButton {
-        id: roundButton
-        x: 267
-        width: 40
-        height: 40
-        anchors.right: parent.right
-        anchors.top: parent.top
-        icon.color: "#ddffffff"
-        icon.source: "dots.png"
-        display: AbstractButton.IconOnly
-        flat: true
-        anchors.topMargin: 56
-        anchors.rightMargin: 15
-    }
+        RoundButton {
+                id: dotsButton
+                width: 30
+                height: 30
+                flat: true
+                anchors {
+                    top: parent.top
+                    right: parent.right
+                    topMargin: 15
+                    rightMargin: 15
+
+                }
+                Image {
+                        source: "dots.png"
+                        anchors.fill: parent
+                        fillMode: Image.PreserveAspectFit
+                    }
+            }
 
 
 
     }
-    RoundButton {
-        id: plusButton
-        x: 894
-        width: 40
-        height: 40
-        text: "+"
-        anchors.right: parent.right
-        anchors.top: parent.verticalCenter
-        anchors.rightMargin: 0
-        anchors.topMargin: 0
-        icon.source: "plus.png"
-        display: AbstractButton.IconOnly
-        flat: true
-        onClicked: {
-            map.zoomLevel+=.2;
-        }
-    }
-
-    RoundButton {
-        id: minusButton
-        x: 972
-        width: 40
-        height: 40
-        text: "-"
-        anchors.right: parent.right
-        anchors.top: plusButton.top
-        anchors.topMargin: 80
-        anchors.rightMargin: 0
-        icon.source: "minus.png"
-        display: AbstractButton.IconOnly
-        flat: true
-        onClicked: {
-            map.zoomLevel-=.2;
-        }
-    }
-    Button {
-        text: "remove one"
-        onClicked: {
-            poli.removeCoordinate(poli.path[poli.path.length-1])
-            mapItem.coordinate =poli.path[poli.path.length-1]
-            map.addMapItem(mapItem)
-        }
-}
-    Button {
-        x:50
-        id: deleteall
-        text: "dell all"
-        onClicked: {
-            poli.path = []
-            map.addMapItem(poli)
-
-        }
-}
 
     Button {
         x:100
         id: gps_first_dot
         text: "first= GPS"
         onClicked: {
-            if (poli.path == []){
-                poli.addCoordinate( positionSource.position.coordinate)
 
+            if (poli.path.length === 0){
+                poli.addCoordinate( positionSource.position.coordinate)
             }
-            else{
+
+
+
                 poli.replaceCoordinate(0,positionSource.position.coordinate)
 
-}
+
             map.addMapItem(poli)
         }
 }
-    RoundButton {
-        x: 300
-                    id: northButton
-                    icon.source: "qrc:/arrow.png"
-                    icon.width: 30
-                    icon.height: 30
+    RoundButton{
+                        id: northButton
+                        width: 40
+                        height: 40
+                        flat: true
+                        anchors {
+                            horizontalCenter: parent.horizontalCenter
+                            top: parent.top
+                            topMargin: 10
+                        }
+                        Image{
+                            source: "arrow.png"
+                                    anchors.fill: parent
+                                    fillMode: Image.PreserveAspectFit
+                        }
 
-                    anchors {
-                        horizontalCenter: parent.horizontalCenter
-                        top: parent.top
-                        topMargin: 16
-                    }
-                    onClicked: {
-                        map.setBearing(0,map.center);
-                    }
-                }
+
+                        onClicked: {
+                            map.setBearing(0,map.center);
+        }
+        }
     Button{
     id:print_b
     y: 200
     text: "Print_route"
     onClicked: {
         console.log(poli.path)
+        console.log(typeof poli.path[0])
 
     }
     }
-    RoundButton {
-            x: 450
-            id: centerButton
-            //icon.source: "qrc:/me.png"
-            icon.width: 30
-            icon.height: 30
-            anchors.right: parent.right
-            anchors.top: parent.TopRight
-            anchors.topMargin: 16
-            anchors.rightMargin: 0
-            onClicked: {
-                map.center = positionSource.position.coordinate;
-                map.zoomLevel = 12;
-            }
-        }
+
     Label{
         y:300
         id: leng_text
+    }
+    Column {
+            anchors {
+                right: parent.right
+                verticalCenter: parent.verticalCenter
+                rightMargin: 10
+
+            }
+            spacing: 10
+            Image{
+                id: plusButton
+                width: 40
+                height: 40
+                source: "plus.png"
+                MouseArea{
+                anchors.fill: parent
+                onClicked: {
+                    map.zoomLevel+=.2;
+                }
+            }
+    }
+            Image {
+                id: minusButton
+
+                width: 40
+                height: 40
+
+                source: "minus.png"
+                MouseArea{
+                    anchors.fill: parent
+                onClicked: {
+                    map.zoomLevel-=.2;
+                }
+            }
+            }
+            Image {
+                id: removeway
+                width: 40
+                height: 40
+
+                source: "delone.png"
+                MouseArea{
+                    anchors.fill: parent
+                onClicked: {
+                    poli.removeCoordinate(poli.path[poli.path.length-1])
+                    mapItem.coordinate =poli.path[poli.path.length-1]
+                    map.addMapItem(mapItem)
+
+
+                }
+        }
+            }
+            Image {
+                id: deleteall
+                width: 40
+                height: 40
+
+                source: "delall.png"
+                MouseArea{
+                    anchors.fill: parent
+                onClicked: {
+                    poli.path = []
+                    map.addMapItem(poli)
+                    leng_text.text="Distance: " + "0" + " meters" + "0"+ " Km"
+
+                }
+                }
+        }
+            Image {
+                    id: centerButton
+                    width: 40
+                    height: 40
+
+                    source: "me.png"
+                    MouseArea{
+                        anchors.fill: parent
+                    onClicked: {
+                        map.center = positionSource.position.coordinate;
+                        map.zoomLevel = 12;
+                    }
+                }
+            }
+        }
+    Button {
+    onClicked:{
+        var routePath = QtPositioning.geoPath()
+        routePath.addCoordinate(poli.path[0])
+        routePath.addCoordinate(poli.path[1])
+        var routeInfo = QtPositioning.gpxRoute()
+        routeInfo.name = "My Route"
+        routeInfo.description = "A description of my route"
+        routeInfo.startTime = new Date()
+        routeInfo.endTime = new Date()
+
+        var gpxDoc = QtPositioning.gpxDocument()
+        gpxDoc.routes.push(routeInfo)
+        gpxDoc.tracks.push(routePath)
+        var file = new QFile("myroute.gpx")
+        file.open(QIODevice.WriteOnly | QIODevice.Text)
+        var stream = new QTextStream(file)
+        stream.writeString(gpxDoc.toString())
+        file.close()
+
+    }
     }
     Component.onCompleted: {
             label_te.text = "Map"

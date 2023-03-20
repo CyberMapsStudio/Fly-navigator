@@ -11,6 +11,9 @@
         <file>plus.png</file>
         <file>minus.png</file>
 		<file>GPS-PNG.png</file>
+<file>delall.png</file>
+<file>delone.png</file>
+<file>me.png</file>
 <file>arrow.png</file>
 <file>placeholder.png</file>
     </qresource>
