@@ -22,9 +22,7 @@ Rectangle {
 
         MapPolyline {
             id: poli
-                 path: [
-                    QtPositioning.coordinate(positionSource.position.coordinate.latitude, positionSource.position.coordinate.longitude),
-                 ]
+
                  line.width: 3
                  line.color: "red"
              }
@@ -79,6 +77,13 @@ Rectangle {
                 marker_gps.coordinate = position.coordinate
                 map.addMapItem(marker_gps)
                 map.addMapItem(poli)
+                if (switchDelegate2.checked){
+                    poli.replaceCoordinate(0,positionSource.position.coordinate)
+                }
+                if (closeLocation.checked){
+
+                    map.center= positionSource.position.coordinate
+                }
             }
 
             // Инициализация QGeoPositionInfoSource
@@ -301,8 +306,16 @@ Rectangle {
 
     }
     }
+    Switch{
+        id: closeLocation
+
+
+    }
     Component.onCompleted: {
             label_te.text = "Map"
+            //while(1){
+                console.log(closeLocation.down)
+            //}
         }
 
     }
