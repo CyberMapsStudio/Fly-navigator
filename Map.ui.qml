@@ -4,13 +4,10 @@ import QtPositioning 5.3
 import QtLocation 5.15
 import QtSensors 5.0
 Rectangle {
-
+    id:rooter
     color: "#263238"
     border.color: "#263238"
-    Gyroscope {
-            id: gyroscope
-    }
-
+    property int counter_poli: 0;
     Plugin{
         id:mapPlugin
         name:"osm"
@@ -132,6 +129,26 @@ Rectangle {
                            console.log("Distance: " + finalDistance + " meters")
 
                             leng_text.text="Distance: " + Math.round(finalDistance) + " meters" + Math.round(finalDistance)/1000+ " Km"
+
+                           Qt.createQmlObject(`
+                               import QtQuick 2.0
+
+                               Rectangle {
+                                              x:${counter_poli}*50
+                                   color: "red"
+                                   width: 20
+                                   height: 20
+                               }
+                               `,
+                               rooter,
+                               "myDynamicSnippet"
+                           );
+                           counter_poli++
+
+
+
+
+
                }
 
     }
