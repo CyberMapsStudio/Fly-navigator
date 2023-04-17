@@ -2,11 +2,14 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtPositioning 5.3
 import QtLocation 5.15
+import QtSensors 5.0
 Rectangle {
-
 
     color: "#263238"
     border.color: "#263238"
+    Gyroscope {
+            id: gyroscope
+    }
 
     Plugin{
         id:mapPlugin
@@ -77,13 +80,21 @@ Rectangle {
                 marker_gps.coordinate = position.coordinate
                 map.addMapItem(marker_gps)
                 map.addMapItem(poli)
-                if (switchDelegate2.checked){
+                if (1){
                     poli.replaceCoordinate(0,positionSource.position.coordinate)
                 }
                 if (closeLocation.checked){
 
                     map.center= positionSource.position.coordinate
                 }
+
+                if (poli.pathLength() !== 1){
+                    if (positionSource.position.coordinate.distanceTo(poli.path[1])<=100){
+                        poli.removeCoordinate(1)
+                    }
+                }
+
+
             }
 
             // Инициализация QGeoPositionInfoSource
@@ -120,7 +131,7 @@ Rectangle {
                                .distanceTo(QtPositioning.coordinate(poli.path[poli.pathLength()-1].latitude,poli.path[poli.pathLength()-1].longitude))
                            console.log("Distance: " + finalDistance + " meters")
 
-                            leng_text.text="Distance: " + Math.round(finalDistance) + " meters" + Math.round(finalDistance)+ " Km"
+                            leng_text.text="Distance: " + Math.round(finalDistance) + " meters" + Math.round(finalDistance)/1000+ " Km"
                }
 
     }
@@ -245,9 +256,13 @@ Rectangle {
                 MouseArea{
                     anchors.fill: parent
                 onClicked: {
+                    if (poli.pathLength() !== 1){
                     poli.removeCoordinate(poli.path[poli.path.length-1])
                     mapItem.coordinate =poli.path[poli.path.length-1]
                     map.addMapItem(mapItem)
+                    }
+
+
 
 
                 }
@@ -265,6 +280,7 @@ Rectangle {
                     poli.path = []
                     map.addMapItem(poli)
                     leng_text.text="Distance: " + "0" + " meters" + "0"+ " Km"
+                    poli.addCoordinate(positionSource.position.coordinate)
 
                 }
                 }
@@ -312,10 +328,9 @@ Rectangle {
 
     }
     Component.onCompleted: {
+
+            poli.path= [positionSource.position.coordinate]
             label_te.text = "Map"
-            //while(1){
-                console.log(closeLocation.down)
-            //}
         }
 
     }

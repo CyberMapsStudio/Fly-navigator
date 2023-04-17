@@ -38,3 +38,5 @@ DISTFILES += \
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
 android: include(C:/Users/Home/AppData/Local/Android/Sdk/android_openssl/openssl.pri)
 QT += positioning
+QT += quick sql
+CONFIG += c++11
