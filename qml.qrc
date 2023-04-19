@@ -5,16 +5,14 @@
         <file>map_ico.png</file>
         <file>route_ico.png</file>
         <file>settings_ico.png</file>
-        <file>Settings.ui.qml</file>
-        <file>Map.ui.qml</file>
-        <file>Route.ui.qml</file>
+        <file alias="Map.qml">Map.qml</file>
         <file>plus.png</file>
         <file>minus.png</file>
-		<file>GPS-PNG.png</file>
-<file>delall.png</file>
-<file>delone.png</file>
-<file>me.png</file>
-<file>arrow.png</file>
-<file>placeholder.png</file>
+        <file>GPS-PNG.png</file>
+        <file>delall.png</file>
+        <file>delone.png</file>
+        <file>me.png</file>
+        <file>arrow.png</file>
+        <file>placeholder.png</file>
     </qresource>
 </RCC>

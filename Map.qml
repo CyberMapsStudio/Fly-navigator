@@ -3,11 +3,15 @@ import QtQuick.Controls 2.15
 import QtPositioning 5.3
 import QtLocation 5.15
 import QtSensors 5.0
+import QtQuick.LocalStorage 2.15
+
 Rectangle {
     id:rooter
     color: "#263238"
     border.color: "#263238"
+    property var db : LocalStorage.openDatabaseSync("myDB","1.0","mydatabase",100000)
     property int counter_poli: 0;
+
     Plugin{
         id:mapPlugin
         name:"osm"
@@ -22,9 +26,14 @@ Rectangle {
 
         MapPolyline {
             id: poli
+                objectName: "poli"
 
                  line.width: 3
                  line.color: "red"
+                 signal poliSignal()
+                 function changePath(stroka){
+                    poli.path = JSON.parse(stroka)
+                 }
              }
         MapQuickItem {
                id: mapItem
@@ -175,25 +184,6 @@ Rectangle {
 
 
     }
-
-    Button {
-        x:100
-        id: gps_first_dot
-        text: "first= GPS"
-        onClicked: {
-
-            if (poli.path.length === 0){
-                poli.addCoordinate( positionSource.position.coordinate)
-            }
-
-
-
-                poli.replaceCoordinate(0,positionSource.position.coordinate)
-
-
-            map.addMapItem(poli)
-        }
-}
     RoundButton{
                         id: northButton
                         width: 40
@@ -220,8 +210,9 @@ Rectangle {
     y: 200
     text: "Print_route"
     onClicked: {
-        console.log(poli.path)
+        console.log(JSON.stringify(poli.path))
         console.log(typeof poli.path[0])
+
 
     }
     }
@@ -343,6 +334,55 @@ Rectangle {
         id: closeLocation
 
 
+    }
+    Button{
+    x:50
+        onClicked: {
+            db.transaction(
+                           function(tx) {
+                               // Create the database if it doesn't already exist
+                               tx.executeSql('CREATE TABLE IF NOT EXISTS tables(salutation TEXT, salutee TEXT)');
+                           }
+                       )
+
+
+    }
+    }
+    Button{
+    x:200
+    text:"print"
+        onClicked: {
+            db.transaction(
+                           function(tx) {
+                               // Create the database if it doesn't already exist
+                               var rs = tx.executeSql('SELECT * FROM tables');
+
+                                                   var r = ""
+                                                   for (var i = 0; i < rs.rows.length; i++) {
+                                                       r += rs.rows.item(i).salutation + ", " + rs.rows.item(i).salutee + "\n"
+                                                   }
+
+                                                   console.log(r)
+                           }
+                       )
+
+
+    }
+    }
+
+    Button{
+    x:300
+    text:"+++++++"
+        onClicked: {
+            db.transaction(
+                           function(tx) {
+                               // Create the database if it doesn't already exist
+                              tx.executeSql('INSERT INTO tables VALUES(?, ?)', [ 'hello', 'world' ]);
+                           }
+                       )
+
+
+    }
     }
     Component.onCompleted: {
 

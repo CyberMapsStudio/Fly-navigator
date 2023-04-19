@@ -1,5 +1,4 @@
 import QtQuick 2.15
-
 import QtQuick.Window 2.15
 import QtQuick.Controls 2.15
 Window {
@@ -7,6 +6,7 @@ Window {
     width: Screen.width
     height: Screen.height
     visible: true
+
     Rectangle {
         id: rectangle1
         width: Screen.width
@@ -47,7 +47,7 @@ Window {
 
         Row {
             id: row
-            y: 727
+            y: 727//727
             height: 73
             anchors.left: parent.left
             anchors.right: parent.right
@@ -182,8 +182,20 @@ Window {
 
                 }
             }
+            Button{
+            y:40
+            x:40
+            text: "TEST ROUTE"
+            onClicked: {
+
+                console.log(stack.view)
+
+                }
+            }
         }
+
         }
+
         Drawer {
 
                 id: drawerSettings
