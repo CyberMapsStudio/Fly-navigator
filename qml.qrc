@@ -5,7 +5,6 @@
         <file>map_ico.png</file>
         <file>route_ico.png</file>
         <file>settings_ico.png</file>
-        <file alias="Map.qml">Map.qml</file>
         <file>plus.png</file>
         <file>minus.png</file>
         <file>GPS-PNG.png</file>

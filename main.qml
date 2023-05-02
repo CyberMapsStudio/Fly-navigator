@@ -190,14 +190,33 @@ Window {
                 x:150
             text:"save route"
             onClicked: {
+                var orig =JSON.stringify(map_clone.poli.path.slice(1))
+                var another = false
+                map_clone.db.transaction(
+                               function(tx) {
+                                   // Create the database if it doesn't already exist
+                                   var rs = tx.executeSql('SELECT * FROM routes');
+
+
+                                                       for (var i = 0; i < rs.rows.length; i++) {
+                                                            if(rs.rows.item(i).path == orig){
+                                                            another = true
+                                                                }
+                                                       }
+
+
+                              }
+                               )
 
                 console.log(JSON.stringify(map_clone.poli.path.slice(1)))
+                if (another ==false){
                 map_clone.db.transaction(
                                            function(tx) {
                                                tx.executeSql('INSERT INTO routes (path) values (?)',  [JSON.stringify(map_clone.poli.path.slice(1))] )
                                             }
                 )
                 refresh.clicked()
+            }
             }
             }
             Button{
