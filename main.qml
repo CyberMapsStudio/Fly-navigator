@@ -1,12 +1,15 @@
 import QtQuick 2.15
 import QtQuick.Window 2.15
 import QtQuick.Controls 2.15
+import QtPositioning 5.3
+import QtQuick.Layouts 1.15
+import "components" as Components
 Window {
     id: window
     width: Screen.width
     height: Screen.height
     visible: true
-
+    property var path_poli
     Rectangle {
         id: rectangle1
         width: Screen.width
@@ -48,7 +51,7 @@ Window {
         Row {
             id: row
             y: 727//727
-            height: 73
+            height: 72
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.bottom: parent.bottom
@@ -183,14 +186,134 @@ Window {
                 }
             }
             Button{
+                y:40
+                x:150
+            text:"save route"
+            onClicked: {
+
+                console.log(JSON.stringify(map_clone.poli.path.slice(1)))
+                map_clone.db.transaction(
+                                           function(tx) {
+                                               tx.executeSql('INSERT INTO routes (path) values (?)',  [JSON.stringify(map_clone.poli.path.slice(1))] )
+                                            }
+                )
+                refresh.clicked()
+            }
+            }
+            Button{
             y:40
             x:40
             text: "TEST ROUTE"
-            onClicked: {
+            onClicked:{
+                var r = ""
+                map_clone.db.transaction(
+                               function(tx) {
+                                   // Create the database if it doesn't already exist
+                                   var rs = tx.executeSql('SELECT * FROM routes ORDER BY name DESC LIMIT 1;');
 
-                console.log(stack.view)
+
+                                                       for (var i = 0; i < rs.rows.length; i++) {
+                                                           r += rs.rows.item(i).path
+                                                       }
+
+
+                              }
+                           )
+
+                //map_clone.poli.path[1]=t[0]
+                //console.log(t[0])
+                for (let i=map_clone.poli.pathLength();map_clone.poli.pathLength()>1;i--){
+                    map_clone.poli.removeCoordinate(i)
+                }
+                var b =JSON.parse(r)
+                console.log(b)
+                for(let i=0;(b.length)-1>=i;i++){
+                    map_clone.poli.addCoordinate(QtPositioning.coordinate(b[i].latitude, b[i].longitude))
+                    console.log(i)
+                }
+            }
+            }
+            Button{
+                y:40
+                x:300
+                id:refresh
+                text: "refresh"
+                onClicked:{
+                    for(var i = routesLay.children.length; i > 0 ; i--) {
+                            console.log("destroying: " + i)
+                            routesLay.children[i-1].destroy()}
+                    map_clone.db.transaction(
+                                   function(tx) {
+                                       // Create the database if it doesn't already exist
+                                       var rs = tx.executeSql('SELECT * FROM routes');
+
+
+                                                           for (var i = 0; i < rs.rows.length; i++) {
+                                                               //r += rs.rows.item(i).path
+                                                               Qt.createQmlObject(`import QtQuick 2.0
+                                                                                  import QtPositioning 5.3
+import QtQuick.Controls 2.15
+
+                                                   Button {
+                                                       text: "ROUTE ${rs.rows.item(i).name}"
+                                                       onClicked: {
+                                                                                  var r = ""
+                                                                                  map_clone.db.transaction(
+                                                                                                 function(tx) {
+                                                                                                     // Create the database if it doesn't already exist
+                                                                                                     var rs = tx.executeSql('SELECT * FROM routes where name=${rs.rows.item(i).name};');
+
+
+                                                                                                                         for (var i = 0; i < rs.rows.length; i++) {
+                                                                                                                             r += rs.rows.item(i).path
+                                                                                                                         }
+
+
+                                                                                                }
+                                                                                             )
+
+
+                                                                                  for (let i=map_clone.poli.pathLength();map_clone.poli.pathLength()>1;i--){
+                                                                                      map_clone.poli.removeCoordinate(i)
+                                                                                  }
+                                                                                  var b =JSON.parse(r)
+                                                                                  console.log(b)
+                                                                                  for(let i=0;(b.length)-1>=i;i++){
+                                                                                      map_clone.poli.addCoordinate(QtPositioning.coordinate(b[i].latitude, b[i].longitude))
+                                                                                      console.log(i)
+                                                                                  }
+                                                                              }
+                                                                                  }
+
+                                                   `,routesLay)
+                                                           }
+
+
+                                  }
+                               )
 
                 }
+            }
+            Button{
+                text:"Delate all"
+                y:100
+                x:40
+                 onClicked:{
+                     map_clone.db.transaction(
+                                                function(tx) {
+                                                    tx.executeSql('DELETE FROM routes' )
+                                                    refresh.clicked()
+                                                 }
+                     )
+
+
+}
+            }
+            ColumnLayout{
+                id:routesLay
+                spacing: 2
+                y:200
+
             }
         }
 
@@ -327,18 +450,22 @@ Window {
                     }
                 }
         }
+                Component.onCompleted: {
+                    refresh.clicked()
+                }
+        }
+        Components.Map{
+            id: map_clone
+            anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.top: rectangle.bottom
+                        anchors.bottom: row.top
+                        anchors.bottomMargin: 0
+                        anchors.topMargin: 0
+
         }
 
-        StackView {
-            id: stack
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.top: rectangle.bottom
-            anchors.bottom: row.top
-            anchors.bottomMargin: 0
-            anchors.topMargin: 0
-            initialItem: Map {}
-        }
+
 
     }
 

@@ -14,5 +14,18 @@
         <file>me.png</file>
         <file>arrow.png</file>
         <file>placeholder.png</file>
+        <file>components/Map.qml</file>
+        <file>components/arrow.png</file>
+        <file>components/delall.png</file>
+        <file>components/delone.png</file>
+        <file>components/dots.png</file>
+        <file>components/GPS-PNG.png</file>
+        <file>components/map_ico.png</file>
+        <file>components/me.png</file>
+        <file>components/minus.png</file>
+        <file>components/placeholder.png</file>
+        <file>components/plus.png</file>
+        <file>components/route_ico.png</file>
+        <file>components/settings_ico.png</file>
     </qresource>
 </RCC>

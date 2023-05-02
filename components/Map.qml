@@ -11,7 +11,7 @@ Rectangle {
     border.color: "#263238"
     property var db : LocalStorage.openDatabaseSync("myDB","1.0","mydatabase",100000)
     property int counter_poli: 0;
-
+    property alias  poli: poli
     Plugin{
         id:mapPlugin
         name:"osm"
@@ -26,7 +26,7 @@ Rectangle {
 
         MapPolyline {
             id: poli
-                objectName: "poli"
+
 
                  line.width: 3
                  line.color: "red"
@@ -86,10 +86,10 @@ Rectangle {
                 if (1){
                     poli.replaceCoordinate(0,positionSource.position.coordinate)
                 }
-                if (closeLocation.checked){
+                //if (closeLocation.checked){
 
-                    map.center= positionSource.position.coordinate
-                }
+                    //map.center= positionSource.position.coordinate
+                //}
 
                 if (poli.pathLength() !== 1){
                     if (positionSource.position.coordinate.distanceTo(poli.path[1])<=100){
@@ -136,19 +136,19 @@ Rectangle {
 
                             leng_text.text="Distance: " + Math.round(finalDistance) + " meters" + Math.round(finalDistance)/1000+ " Km"
 
-                           Qt.createQmlObject(`
-                               import QtQuick 2.0
+                           //Qt.createQmlObject(`
+                               //import QtQuick 2.0
 
-                               Rectangle {
-                                              x:${counter_poli}*50
-                                   color: "red"
-                                   width: 20
-                                   height: 20
-                               }
-                               `,
-                               rooter,
-                               "myDynamicSnippet"
-                           );
+                               //Rectangle {
+                                 //             x:${counter_poli}*50
+                                   //color: "red"
+                                   //width: 20
+                                   //height: 20
+                               //}
+                              // `,
+                              // rooter,
+                              // "myDynamicSnippet"
+                           //);
                            counter_poli++
 
 
@@ -208,11 +208,11 @@ Rectangle {
     text: "Print_route"
     onClicked: {
         console.log(JSON.stringify(poli.path))
-        console.log(typeof poli.path[0])
+        //console.log(typeof poli.path[0])
 
 
     }
-    }
+   }
 
     Label{
         y:300
@@ -305,46 +305,25 @@ Rectangle {
                 }
             }
         }
-    Button {
-    onClicked:{
-        var routePath = QtPositioning.geoPath()
-        routePath.addCoordinate(poli.path[0])
-        routePath.addCoordinate(poli.path[1])
-        var routeInfo = QtPositioning.gpxRoute()
-        routeInfo.name = "My Route"
-        routeInfo.description = "A description of my route"
-        routeInfo.startTime = new Date()
-        routeInfo.endTime = new Date()
 
-        var gpxDoc = QtPositioning.gpxDocument()
-        gpxDoc.routes.push(routeInfo)
-        gpxDoc.tracks.push(routePath)
-        var file = new QFile("myroute.gpx")
-        file.open(QIODevice.WriteOnly | QIODevice.Text)
-        var stream = new QTextStream(file)
-        stream.writeString(gpxDoc.toString())
-        file.close()
-
-    }
-    }
-    Switch{
-        id: closeLocation
+    //Switch{
+        //id: closeLocation
 
 
-    }
-    Button{
-    x:50
-        onClicked: {
-            db.transaction(
-                           function(tx) {
-                               // Create the database if it doesn't already exist
-                               tx.executeSql('CREATE TABLE IF NOT EXISTS tables(salutation TEXT, salutee TEXT)');
-                           }
-                       )
+    //}
+    //Button{
+    //x:50
+       // onClicked: {
+         //   db.transaction(
+           //                function(tx) {
+             //                  // Create the database if it doesn't already exist
+               //                tx.executeSql('CREATE TABLE IF NOT EXISTS tables(salutation TEXT, salutee TEXT)');
+                 //          }
+                   //    )
 
 
-    }
-    }
+    //}
+    //}
     Button{
     x:200
     text:"print"
@@ -352,36 +331,43 @@ Rectangle {
             db.transaction(
                            function(tx) {
                                // Create the database if it doesn't already exist
-                               var rs = tx.executeSql('SELECT * FROM tables');
+                               var rs = tx.executeSql('SELECT * FROM routes');
 
                                                    var r = ""
                                                    for (var i = 0; i < rs.rows.length; i++) {
-                                                       r += rs.rows.item(i).salutation + ", " + rs.rows.item(i).salutee + "\n"
+                                                       r += rs.rows.item(i).name +"      "+rs.rows.item(i).path+"\n"
                                                    }
 
-                                                   console.log(r)
-                           }
+                                                console.log(r)
+                          }
                        )
 
 
     }
     }
 
-    Button{
-    x:300
-    text:"+++++++"
-        onClicked: {
-            db.transaction(
-                           function(tx) {
+    //Button{
+    //x:300
+    //text:"+++++++"
+      //  onClicked: {
+        //    db.transaction(
+          //                 function(tx) {
                                // Create the database if it doesn't already exist
-                              tx.executeSql('INSERT INTO tables VALUES(?, ?)', [ 'hello', 'world' ]);
-                           }
-                       )
+              //                tx.executeSql('INSERT INTO tables VALUES(?, ?)', [ 'hello', 'world' ]);
+            //               }
+                //       )
 
 
-    }
-    }
+    //}
+   // }
+
     Component.onCompleted: {
+        db.transaction(
+                                   function(tx) {
+                                       // Create the database if it doesn't already exist
+                                       tx.executeSql('CREATE TABLE IF NOT EXISTS routes(name INTEGER PRIMARY KEY, path TEXT)');
+                                   }
+                            )
 
             poli.path= [positionSource.position.coordinate]
             label_te.text = "Map"
