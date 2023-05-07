@@ -9,12 +9,20 @@ Rectangle {
     id:rooter
     color: "#263238"
     border.color: "#263238"
+    property bool scheme : true
     property var db : LocalStorage.openDatabaseSync("myDB","1.0","mydatabase",100000)
     property int counter_poli: 0;
     property alias  poli: poli
     Plugin{
         id:mapPlugin
-        name:"osm"
+        name:"mapboxgl"
+
+
+        //PluginParameter { name: "osm.mapping.highdpi_tiles"; value: "true" }
+        //PluginParameter {
+          //    name: 'osm.mapping.custom.host'
+            //  value: 'https://tile.opentopomap.org'
+            //}
     }
     Map {
         id: map
@@ -22,8 +30,8 @@ Rectangle {
         plugin: mapPlugin
         center: QtPositioning.coordinate(47.21276881282476, 38.915922528876514)
         zoomLevel: 12
-
-
+        activeMapType: supportedMapTypes[1]
+        copyrightsVisible : false
         MapPolyline {
             id: poli
 
@@ -360,7 +368,18 @@ Rectangle {
 
     //}
    // }
-
+    Button{
+    onClicked: {
+        if (scheme){
+               map.activeMapType = map.supportedMapTypes[4]
+                scheme=!scheme
+        }
+        else{
+            map.activeMapType = map.supportedMapTypes[1]
+             scheme=!scheme
+        }
+    }
+    }
     Component.onCompleted: {
         db.transaction(
                                    function(tx) {
