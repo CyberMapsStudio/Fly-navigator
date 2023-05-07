@@ -369,6 +369,7 @@ Rectangle {
     //}
    // }
     Button{
+    text: "change style map"
     onClicked: {
         if (scheme){
                map.activeMapType = map.supportedMapTypes[4]
